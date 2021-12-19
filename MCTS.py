@@ -17,7 +17,7 @@ class node:
 
     def add_child(self, action, priorProb):
         action_name = utils.move_to_str(action)
-        self.child[action_name] = edge(action=action, parent_node=self, priorP=priorProb)
+        self.child[action_name] = edge(action=action, parent_node=self, priorProb=priorProb)
 
     def get_child(self, action):
         child_node, _ = self.child[action].get_child()
@@ -92,7 +92,7 @@ class MCTS:
         self.board_size = board_size
         self.s_per_step = simulation_per_step  # 模拟400步
 
-        self.mode = net
+        self.model = net
 
         self.cur_node = node(None, 1)
 
@@ -122,26 +122,30 @@ class MCTS:
 
             self.simulate_prcess.simulate_reset(self.game_process.current_board_state(True))
             state = self.simulate_prcess.current_board_state()  # [8, 8]
-            print(state)
+            # print(state)
 
             while game_continue and not expand:
                 if cur_node.eval_or_not():
                     # self.simulate_prcess.which_player() 当前玩家编号
-                    state_prob, _ = self.mode.eval(
+                    state_prob, _ = self.model.eval(
                         utils.transfer_to_input(state, self.simulate_prcess.which_player(), self.board_size))
                     valid_move = utils.valid_move(state)  # 判断当前状态中可以走的点（坐标）
                     eval_counter += 1
                     # 遍历可行位置点，为当前cur_node添加孩子节点
                     for move in valid_move:
                         cur_node.add_child(action=move, priorProb=state_prob[0, move[0] * self.board_size + move[1]])
-                curnode, expand, action = cur_node.UCB_sim()
+                cur_node, expand, action = cur_node.UCB_sim()
+                # print(action)
+                # print("=====")
                 game_continue, state = self.simulate_prcess.step(action)
+                print(state)
+                print("=====")
                 step_per_simulate += 1
 
             if not game_continue:
                 cur_node.backup(1)
             elif expand:
-                _, state_v = self.mode.eval(
+                _, state_v = self.model.eval(
                     utils.transfer_to_input(state, self.simulate_prcess.which_player(), self.board_size))
                 cur_node.backup(state_v)
         return eval_counter / self.s_per_step, step_per_simulate / self.s_per_step
@@ -164,6 +168,7 @@ class MCTS:
 
             self.cur_node = self.MCTS_step(action=action)
 
+            # 记录每一步的选择走的位置的 概率分布 和 走的动作
             game_record.append({"distirbution": distribution, "action": action})
 
             end_time1 = int(time.time())

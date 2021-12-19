@@ -7,7 +7,7 @@ class main_process:
         self.board_size = board_size
         self.board = np.zeros([self.board_size + 8, self.board_size + 8])  # 棋盘
         self.current_player = 1
-        self.passed = 0 # 计数batch个数
+        self.passed = 0  # 计数batch个数
         if AI:
             self.AI = "random"
 
