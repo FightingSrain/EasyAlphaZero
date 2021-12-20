@@ -1,4 +1,3 @@
-
 import torch
 
 from model_small import NeuralNetwork as NN
@@ -9,18 +8,18 @@ import utils
 import os
 import matplotlib.pyplot as plt
 
-
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
 
 def train():
     nn = NN(input_layers=3, board_size=utils.board_size, learning_rate=0.1)
 
-    tree = MCTS(board_size=utils.board_size, net=nn)
-    nn.adjust_lr(1e-3)
+    tree = MCTS(board_size=utils.board_size, net=nn)  # 初始化MCTS
+    nn.adjust_lr(1e-3)  # 调整学习率
     stack = utils.random_stack()
 
     record = []
-    game_time = 3600 # 3600
+    game_time = 3600  # 3600
 
     while True:
         game_record, eval, steps = tree.game()
@@ -65,20 +64,6 @@ def train():
 
         game_time += 1
 
+
 if "__main__" == __name__:
     train()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -166,13 +166,18 @@ class MCTS:
             avg_eval, avg_s_per_step = self.simulation()  # 模拟
             action, distribution = self.cur_node.get_dsitribution(train=train)
             game_coutinue, state = self.game_process.step(utils.str_to_move(action))
-
+            # if game_coutinue == False:
+            #     print(game_coutinue)
+            #     print("==========")
             self.cur_node = self.MCTS_step(action=action)
 
             # 记录每一步的选择走的位置的 概率分布 和 走的动作
             game_record.append({"distirbution": distribution, "action": action})
 
             end_time1 = int(time.time())
+            # print(step)
+            # print(state)
+            # print("-----")
             print("step:{},"
                   "cost:{}s, "
                   "total time:{}:{} "
@@ -184,13 +189,16 @@ class MCTS:
                                         avg_eval,
                                         avg_s_per_step),
                   end="\r")
+            total_eval += avg_eval
+            total_step += avg_s_per_step
             step += 1
 
-        self.renew()  # 重新构造MCT
+        self.renew()  # 重新构造MCTS
 
         end_time = int(time.time())
         minute = int((end_time - begin_time) / 60)
         second = (end_time - begin_time) % 60
+
         print("In last game, "
               "we cost {}:{}".format(minute, second), end="\n")
 

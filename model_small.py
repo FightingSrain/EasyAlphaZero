@@ -90,10 +90,10 @@ class NeuralNetwork:
             state = Variable(state).double()
             distribution = Variable(distribution).double()
             winner = Variable(winner).double()
-            # print(state.size())
-            # print(distribution.size())
-            # print(winner.size())
-            # print("+++++++++")
+            print(state.size())
+            print(distribution.size())
+            print(winner.size())
+            print("+++++++++")
             if self.use_cuda:
                 state, distribution, winner = state.cuda(), distribution.cuda(), winner.cuda()
 
@@ -120,9 +120,9 @@ class NeuralNetwork:
     def eval(self, state):
         self.model.eval()
         if self.use_cuda:
-            state = torch.DoubleTensor(state).unsqueeze(0).cuda()
+            state = torch.from_numpy(state).unsqueeze(0).cuda()
         else:
-            state = torch.DoubleTensor(state).unsqueeze(0)
+            state = torch.from_numpy(state).unsqueeze(0)
         with torch.no_grad():
             prob, value = self.model(state)
         return F.softmax(prob, 1), value

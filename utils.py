@@ -13,6 +13,8 @@ temperature = 1  # 温度系数
 Cpuct = 0.1
 board_size = 8
 
+batch = 20
+learning_rate = 0.1
 
 class distribution_calculater:
     def __init__(self, size):
@@ -140,7 +142,7 @@ def generate_data_loader(stack):
     tensor_y2 = torch.stack(tuple([torch.Tensor([float(y2)]) for y2 in winner]))
 
     dataset = torch_data.TensorDataset(tensor_x, tensor_y1, tensor_y2)
-    my_loader = torch_data.DataLoader(dataset, batch_size=board_size, shuffle=True)
+    my_loader = torch_data.DataLoader(dataset, batch_size=batch, shuffle=True)
     return my_loader
 
 
