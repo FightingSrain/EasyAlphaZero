@@ -15,7 +15,7 @@ os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 def train():
     nn = NN(input_layers=3, board_size=utils.board_size, learning_rate=0.1)
 
-    tree = MCTS(board_size=8, net=nn)
+    tree = MCTS(board_size=utils.board_size, net=nn)
     nn.adjust_lr(1e-3)
     stack = utils.random_stack()
 
@@ -25,8 +25,8 @@ def train():
     while True:
         game_record, eval, steps = tree.game()
 
-        # print(game_record)
-        # print("+++++")
+        print(game_time)
+        print("========")
 
         if len(game_record) % 2 == 1:
             print("game {} completed, black win, "
@@ -34,6 +34,7 @@ def train():
         else:
             print("game {} completed, white win, "
                   "this game length is {}".format(game_time, len(game_record)))
+        print("The average eval:{}, the average steps:{}".format(eval, steps))
         #
         # 生成训练数据
         train_data = utils.generate_training_data(game_record=game_record, board_size=utils.board_size)
@@ -61,7 +62,6 @@ def train():
             plt.ylabel("Loss")
             plt.savefig("loss record_{}.svg".format(game_time))
             plt.close()
-
 
         game_time += 1
 
