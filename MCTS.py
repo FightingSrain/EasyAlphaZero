@@ -3,6 +3,7 @@ import utils
 import sys
 import time
 
+
 from five_stone_game import main_process as five_stone_game
 
 distrib_calculater = utils.distribution_calculater(size=8)
@@ -138,8 +139,8 @@ class MCTS:
                 # print(action)
                 # print("=====")
                 game_continue, state = self.simulate_prcess.step(action)
-                print(state)
-                print("=====")
+                # print(state)
+                # print("=====")
                 step_per_simulate += 1
 
             if not game_continue:
@@ -190,7 +191,8 @@ class MCTS:
         end_time = int(time.time())
         minute = int((end_time - begin_time) / 60)
         second = (end_time - begin_time) % 60
-        print("In last game, we cost {}:{}".format(minute, second), end="\n")
+        print("In last game, "
+              "we cost {}:{}".format(minute, second), end="\n")
 
         return game_record, total_eval/step, total_step/step
 

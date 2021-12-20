@@ -1,3 +1,6 @@
+import torch
+import torch.utils.data as torch_data
+
 import numpy as np
 
 num2char = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e", 5: "f", 6: "g", 7: "h", 8: "i", 9: "j", 10: "k", 11: "l", 12: "m",
@@ -6,10 +9,10 @@ num2char = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e", 5: "f", 6: "g", 7: "h", 8: "
 char2num = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7, "i": 8, "j": 9, "k": 10, "l": 11, "m": 12,
             "n": 13, "o": 14, "p": 15, "q": 16, "r": 17, "s": 18, "t": 19, "u": 20}
 
-
 temperature = 1  # 温度系数
 Cpuct = 0.1
 board_size = 8
+
 
 class distribution_calculater:
     def __init__(self, size):
@@ -67,21 +70,23 @@ class distribution_calculater:
 def move_to_str(action):
     return num2char[action[0]] + num2char[action[1]]
 
+
 def str_to_move(str):
-    return np.asarray([char2num[str[0]], char2num[str[1]]])
+    return np.array([char2num[str[0]], char2num[str[1]]])
 
 
 # state cur_player board_size 状态合并
 def transfer_to_input(state, current_player, board_size):
     if current_player == 1:
         plant3 = np.ones([board_size, board_size]).astype(float)
-        plant2 = np.asarray(state > 0).astype(float)
-        plant1 = np.asarray(state < 0).astype(float)
+        plant2 = np.array(state > 0).astype(float)
+        plant1 = np.array(state < 0).astype(float)
     else:
         plant3 = np.zeros([board_size, board_size])
-        plant2 = np.asarray(state < 0).astype(float)
-        plant1 = np.asarray(state > 0).astype(float)
+        plant2 = np.array(state < 0).astype(float)
+        plant1 = np.array(state > 0).astype(float)
     return np.stack([plant1, plant2, plant3])
+
 
 # 验证算法是否可行
 def valid_move(state):
@@ -94,10 +99,7 @@ def generate_training_data(game_record, board_size):
     board = np.zeros([board_size, board_size])
     data = []
     player = 1
-    if len(game_record) % 2 == 0:
-        winner = -1
-    else:
-        winner = 1
+    winner = -1 if len(game_record) % 2 == 0 else 1
     for i in range(len(game_record)):
         step = str_to_move(game_record[i]['action'])
         state = transfer_to_input(board, player, board_size)
@@ -107,7 +109,39 @@ def generate_training_data(game_record, board_size):
     return data
 
 
+class random_stack:
+    def __init__(self, length=1000):
+        self.state = []
+        self.distribution = []
+        self.winner = []
+        self.length = length
 
+    def isEmpty(self):
+        return len(self.state) == 0
+
+    def push(self, item):
+        self.state.append(item["state"])
+        self.distribution.append(item["distribution"])
+        self.winner.append(item["value"])
+        # 超过self.length大小后，新增加的覆盖最开始的
+        if len(self.state) >= self.length:
+            self.state = self.state[1:]
+            self.distribution = self.distribution[1:]
+            self.winner = self.winner[1:]
+
+    def seq(self):
+        return self.state, self.distribution, self.winner
+
+# 将生成的数据打包，并打乱
+def generate_data_loader(stack):
+    state, distribution, winner = stack.seq()
+    tensor_x = torch.stack(tuple([torch.from_numpy(s) for s in state]))
+    tensor_y1 = torch.stack(tuple([torch.Tensor(y1) for y1 in distribution]))
+    tensor_y2 = torch.stack(tuple([torch.Tensor([float(y2)]) for y2 in winner]))
+
+    dataset = torch_data.TensorDataset(tensor_x, tensor_y1, tensor_y2)
+    my_loader = torch_data.DataLoader(dataset, batch_size=board_size, shuffle=True)
+    return my_loader
 
 
 

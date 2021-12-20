@@ -2,10 +2,11 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.autograd import Variable
 
 
-
-
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 class share_model(nn.Module):
     def __init__(self, input_layer):
@@ -86,13 +87,15 @@ class NeuralNetwork:
         loss_rocord = []
         for batch_idx, (state, distribution, winner)in enumerate(data_loader):
             tmp = []
-            state = torch.DoubleTensor(state)
-            distribution = torch.DoubleTensor(distribution)
-            winner = torch.DoubleTensor(winner).unsqueeze(1)
+            state = Variable(state).double()
+            distribution = Variable(distribution).double()
+            winner = Variable(winner).double()
+            # print(state.size())
+            # print(distribution.size())
+            # print(winner.size())
+            # print("+++++++++")
             if self.use_cuda:
                 state, distribution, winner = state.cuda(), distribution.cuda(), winner.cuda()
-
-
 
             prob, value = self.model(state)
             output = F.log_softmax(prob, 1)
