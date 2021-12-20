@@ -20,7 +20,7 @@ def train():
     stack = utils.random_stack()
 
     record = []
-    game_time = 1800 # 3600
+    game_time = 3600 # 3600
 
     while True:
         game_record, eval, steps = tree.game()
@@ -60,7 +60,7 @@ def train():
             plt.title("cross entropy loss")
             plt.xlabel("step passed")
             plt.ylabel("Loss")
-            plt.savefig("loss record_{}.svg".format(game_time))
+            # plt.savefig("loss record_{}.svg".format(game_time))
             plt.close()
 
         game_time += 1
