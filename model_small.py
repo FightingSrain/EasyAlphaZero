@@ -111,9 +111,9 @@ class NeuralNetwork:
 
             tmp.append(cross_entropy.data)
             if batch_idx % 10 == 0:
-                print("We have played {} games, and batch {}, "
-                      "the cross entropy loss is {}, "
-                      "the mse loss is {}".format(
+                print("have played {} games, and batch {}, "
+                      "cross entropy loss： {}, "
+                      "mse loss： {}".format(
                     game_time, batch_idx, cross_entropy.data, mse.data))
                 loss_rocord.append(sum(tmp) / len(tmp))  # 平均交叉熵
         return loss_rocord
