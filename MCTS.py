@@ -167,6 +167,7 @@ class MCTS:
 
             avg_eval, avg_s_per_step = self.simulation()  # 模拟,直到一局游戏结束
             action, distribution = self.cur_node.get_dsitribution(train=train)
+
             game_coutinue, state = self.game_process.step(utils.str_to_move(action))
             # if game_coutinue == False:
             #     print(game_coutinue)
@@ -178,8 +179,9 @@ class MCTS:
 
             end_time1 = int(time.time())
             # print(step)
-            # print(state)
-            # print("-----")
+            print(state)
+            print(utils.str_to_move(action))
+            print("-----")
             print("step:{},"
                   "cost:{}s, "
                   "total time:{}:{} "
@@ -205,6 +207,34 @@ class MCTS:
               "we cost {}:{}".format(minute, second), end="\n")
 
         return game_record, total_eval / step, total_step / step
+
+    def human(self, action):
+        game_continue, state = self.game_process.step(action)
+        return state, game_continue
+
+    def machine(self, action, game_continue, state):
+        self.cur_node = self.MCTS_step(utils.move_to_str(action))
+        if game_continue:
+            _, _ = self.simulation()
+            action, distribution = self.cur_node.get_dsitribution(train=False)
+            game_continue, state = self.game_process.step(utils.str_to_move(action))
+        else:
+            pass
+        if type(action) == str:
+            return state, game_continue, utils.str_to_move(action)
+        else:
+            return state, game_continue, action
+    # def interact_game_init(self):
+    #     self.renew()
+    #     _, _ = self.simulation()
+    #     action, distribution = self.cur_node.get_dsitribution(train=False)
+    #     game_continue, state = self.game_process.step(utils.str_to_move(action))
+    #     self.cur_node = self.MCTS_step(action)
+    #     return state, game_continue
+
+
+
+
 
 # test
 # mcts = MCTS()

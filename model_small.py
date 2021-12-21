@@ -41,11 +41,11 @@ class Model(nn.Module):
         self.share_model = share_model(input_size)
 
         self.value_conv1 = nn.Conv2d(kernel_size=(1, 1), in_channels=128, out_channels=16)
-        self.value_fc1 = nn.Linear(in_features=16 * 4 * 4, out_features=256)
+        self.value_fc1 = nn.Linear(in_features=16 * 5 * 5, out_features=256)
         self.value_fc2 = nn.Linear(in_features=256, out_features=1)
 
         self.policy_conv1 = nn.Conv2d(kernel_size=(1, 1), in_channels=128, out_channels=16)
-        self.policy_fc1 = nn.Linear(in_features=16 * 4 * 4, out_features=output_size * output_size)
+        self.policy_fc1 = nn.Linear(in_features=16 * 5 * 5, out_features=output_size * output_size)
 
         self.bn1_v = nn.BatchNorm2d(16)
         self.bn1_p = nn.BatchNorm2d(16)
@@ -54,12 +54,12 @@ class Model(nn.Module):
         share_feature = self.share_model(state)
 
         v = self.value_conv1(share_feature)
-        v = F.relu(self.bn1_v(v)).view(-1, 16 * 4 * 4)
+        v = F.relu(self.bn1_v(v)).view(-1, 16 * 5 * 5)
         v = F.relu(self.value_fc1(v))
         value = torch.tanh(self.value_fc2(v))
 
         p = self.policy_conv1(share_feature)
-        p = F.relu(self.bn1_p(p)).view(-1, 16 * 4 * 4)
+        p = F.relu(self.bn1_p(p)).view(-1, 16 * 5 * 5)
         prob = self.policy_fc1(p)
         # prob [b, 8*8]
         # value [b, 1]

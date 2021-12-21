@@ -11,7 +11,7 @@ char2num = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7, "i":
 
 temperature = 1  # 温度系数
 Cpuct = 0.1
-board_size = 8
+board_size = 9
 
 batch = 20
 learning_rate = 0.1
