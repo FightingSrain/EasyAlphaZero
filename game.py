@@ -35,6 +35,8 @@ class Game(object):
         self.is_pause = False
         self.is_draw = True
         self.score_font = pygame.font.SysFont("Calibri", 130, True)
+        self.clock = pygame.time.Clock()
+
 
     def bind_key(self, key, action):
         if isinstance(key, list):
@@ -60,6 +62,7 @@ class Game(object):
         self.fps = fps
 
     def handle_input(self, event):
+        self.clock.tick(30)
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
