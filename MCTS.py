@@ -179,20 +179,20 @@ class MCTS:
 
             end_time1 = int(time.time())
             # print(step)
-            print(state)
-            print(utils.str_to_move(action))
-            print("-----")
-            print("step:{},"
-                  "cost:{}s, "
-                  "total time:{}:{} "
-                  "Avg eval:{}, "
-                  "Aver step:{}".format(step,
-                                        end_time1 - begin_time1,
-                                        int((end_time1 - begin_time) / 60),
-                                        (end_time1 - begin_time) % 60,
-                                        avg_eval,
-                                        avg_s_per_step),
-                  end="\r")
+            # print(state)
+            # print(utils.str_to_move(action))
+            # print("-----")
+            # print("step:{},"
+            #       "cost:{}s, "
+            #       "total time:{}:{} "
+            #       "Avg eval:{}, "
+            #       "Aver step:{}".format(step,
+            #                             end_time1 - begin_time1,
+            #                             int((end_time1 - begin_time) / 60),
+            #                             (end_time1 - begin_time) % 60,
+            #                             avg_eval,
+            #                             avg_s_per_step),
+            #       end="\r")
             total_eval += avg_eval
             total_step += avg_s_per_step
             step += 1
@@ -203,8 +203,7 @@ class MCTS:
         minute = int((end_time - begin_time) / 60)
         second = (end_time - begin_time) % 60
 
-        print("In last game, "
-              "we cost {}:{}".format(minute, second), end="\n")
+        print("时间花费： {}:{}".format(minute, second), end="\n")
 
         return game_record, total_eval / step, total_step / step
 

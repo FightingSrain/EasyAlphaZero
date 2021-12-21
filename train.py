@@ -28,12 +28,12 @@ def train():
         print("========")
 
         if len(game_record) % 2 == 1:
-            print("game {} completed, black win, "
-                  "this game length is {}".format(game_time, len(game_record)))
+            print("game {} 完成, black win, "
+                  "花费时间 {}".format(game_time, len(game_record)))
         else:
-            print("game {} completed, white win, "
-                  "this game length is {}".format(game_time, len(game_record)))
-        print("The average eval:{}, the average steps:{}".format(eval, steps))
+            print("game {} 完成, white win, "
+                  "花费时间 {}".format(game_time, len(game_record)))
+        # print("The average eval:{}, the average steps:{}".format(eval, steps))
         #
         # 生成训练数据
         train_data = utils.generate_training_data(game_record=game_record, board_size=utils.board_size)
@@ -50,17 +50,17 @@ def train():
         if game_time % 2 == 0:
             torch.save(nn, "./model_test1/model_{}.pkl".format(game_time))
             # torch.save(nn.model.state_dict(), "./model_test1/model{}_.pth".format(game_time))
-        if game_time % 200 == 0:
-            test_game_record, _, _ = tree.game(train=False)
-            print("We finished a test game at {} game time".format(game_time))
+        # if game_time % 200 == 0:
+        #     test_game_record, _, _ = tree.game(train=False)
+        #     print("We finished a test game at {} game time".format(game_time))
 
-        if game_time % 200 == 0:
+        if game_time % 5 == 0:
             plt.figure()
             plt.plot(record)
             plt.title("cross entropy loss")
             plt.xlabel("step passed")
             plt.ylabel("Loss")
-            # plt.savefig("loss record_{}.svg".format(game_time))
+            plt.pause(1)
             plt.close()
 
         game_time += 1
