@@ -178,10 +178,10 @@ class MCTS:
             game_record.append({"distirbution": distribution, "action": action})
 
             end_time1 = int(time.time())
-            # print(step)
-            # print(state)
-            # print(utils.str_to_move(action))
-            # print("-----")
+            print(step)
+            print(state)
+            print(utils.str_to_move(action))
+            print("================================")
             # print("step:{},"
             #       "cost:{}s, "
             #       "total time:{}:{} "

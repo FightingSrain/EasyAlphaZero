@@ -47,7 +47,7 @@ def train():
             for _ in range(5):
                 record.extend(nn.train(my_loader, game_time))
 
-        if game_time % 2 == 0:
+        if game_time % 10 == 0:
             torch.save(nn, "./model_test1/model_{}.pkl".format(game_time))
             # torch.save(nn.model.state_dict(), "./model_test1/model{}_.pth".format(game_time))
         # if game_time % 200 == 0:
