@@ -1,12 +1,12 @@
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-
 import os
+
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
 
 class share_model(nn.Module):
     def __init__(self, input_layer):
@@ -21,11 +21,13 @@ class share_model(nn.Module):
         self.bn2 = nn.BatchNorm2d(64)
         self.bn3 = nn.BatchNorm2d(128)
         self.relu = nn.ReLU()
+
     def forward(self, x):
         x = self.relu(self.bn1(self.conv1(x)))
         x = self.relu(self.bn2(self.conv2(x)))
         res = self.relu(self.bn3(self.conv3(x)))
         return res
+
 
 # test
 # mod = share_model(3)
@@ -63,6 +65,7 @@ class Model(nn.Module):
         # value [b, 1]
         return prob, value
 
+
 # test
 # mod = model(3, 8)
 # ins = torch.ones((16, 3, 8, 8))
@@ -81,26 +84,25 @@ class NeuralNetwork:
         self.mse = nn.MSELoss()
         self.crossloss = nn.CrossEntropyLoss()
 
-
     def train(self, data_loader, game_time):
         self.model.train()
         loss_rocord = []
-        for batch_idx, (state, distribution, winner)in enumerate(data_loader):
+        for batch_idx, (state, distribution, winner) in enumerate(data_loader):
             tmp = []
             state = Variable(state).double()
             distribution = Variable(distribution).double()
             winner = Variable(winner).double()
-            print(state.size())
-            print(distribution.size())
-            print(winner.size())
-            print("+++++++++")
+            # print(state.size())
+            # print(distribution.size())
+            # print(winner.size())
+            # print("+++++++++")
             if self.use_cuda:
                 state, distribution, winner = state.cuda(), distribution.cuda(), winner.cuda()
 
             prob, value = self.model(state)
             output = F.log_softmax(prob, 1)
-            cross_entropy = - torch.mean(torch.sum(distribution*output, 1)) # 交叉熵损失
-            mse = F.mse_loss(value, winner) # 价值损失
+            cross_entropy = - torch.mean(torch.sum(distribution * output, 1))  # 交叉熵损失
+            mse = F.mse_loss(value, winner)  # 价值损失
             loss = cross_entropy + mse
 
             self.optimier.zero_grad()
@@ -113,9 +115,8 @@ class NeuralNetwork:
                       "the cross entropy loss is {}, "
                       "the mse loss is {}".format(
                     game_time, batch_idx, cross_entropy.data, mse.data))
-                loss_rocord.append(sum(tmp)/len(tmp)) # 平均交叉熵
+                loss_rocord.append(sum(tmp) / len(tmp))  # 平均交叉熵
         return loss_rocord
-
 
     def eval(self, state):
         self.model.eval()
@@ -130,11 +131,3 @@ class NeuralNetwork:
     def adjust_lr(self, lr):
         for group in self.optimier.param_groups:
             group['lr'] = lr
-
-
-
-
-
-
-
-

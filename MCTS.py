@@ -3,7 +3,6 @@ import utils
 import sys
 import time
 
-
 from five_stone_game import main_process as five_stone_game
 
 distrib_calculater = utils.distribution_calculater(size=8)
@@ -91,7 +90,7 @@ class edge:
 class MCTS:
     def __init__(self, board_size=8, simulation_per_step=400, net=None):
         self.board_size = board_size
-        self.s_per_step = simulation_per_step  # 模拟400步
+        self.s_per_step = simulation_per_step  # 模拟的最长步数：400步
 
         self.model = net
 
@@ -126,10 +125,13 @@ class MCTS:
             # print(state)
 
             while game_continue and not expand:
-                if cur_node.eval_or_not():
+                if cur_node.eval_or_not():  # 是否没有走过，即孩子节点是否为0
+                    # 如果没走过
                     # self.simulate_prcess.which_player() 当前玩家编号
                     state_prob, _ = self.model.eval(
                         utils.transfer_to_input(state, self.simulate_prcess.which_player(), self.board_size))
+                    # print(state_prob)
+                    # print("======")
                     valid_move = utils.valid_move(state)  # 判断当前状态中可以走的点（坐标）
                     eval_counter += 1
                     # 遍历可行位置点，为当前cur_node添加孩子节点
@@ -163,7 +165,7 @@ class MCTS:
         while game_coutinue:
             begin_time1 = int(time.time())
 
-            avg_eval, avg_s_per_step = self.simulation()  # 模拟
+            avg_eval, avg_s_per_step = self.simulation()  # 模拟,直到一局游戏结束
             action, distribution = self.cur_node.get_dsitribution(train=train)
             game_coutinue, state = self.game_process.step(utils.str_to_move(action))
             # if game_coutinue == False:
@@ -202,8 +204,7 @@ class MCTS:
         print("In last game, "
               "we cost {}:{}".format(minute, second), end="\n")
 
-        return game_record, total_eval/step, total_step/step
-
+        return game_record, total_eval / step, total_step / step
 
 # test
 # mcts = MCTS()

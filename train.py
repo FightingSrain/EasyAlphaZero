@@ -19,9 +19,9 @@ def train():
     stack = utils.random_stack()
 
     record = []
-    game_time = 3600  # 3600
+    game_time = 1  # 3600
 
-    while True:
+    while game_time < 3600:
         game_record, eval, steps = tree.game()
 
         print(game_time)
@@ -49,9 +49,9 @@ def train():
 
         # if game_time % 200 == 0:
         #     torch.save(nn.model.state_dict(), "./model_test1/model{}_.pth".format(game_time))
-        if game_time % 200 == 0:
-            test_game_record, _, _ = tree.game(train=False)
-            print("We finished a test game at {} game time".format(game_time))
+        # if game_time % 200 == 0:
+        #     test_game_record, _, _ = tree.game(train=False)
+        #     print("We finished a test game at {} game time".format(game_time))
 
         if game_time % 200 == 0:
             plt.figure()
