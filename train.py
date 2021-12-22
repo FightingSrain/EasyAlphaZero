@@ -19,9 +19,9 @@ def train():
     stack = utils.random_stack()
 
     record = []
-    game_time = 1  # 3600
+    game_time = 100  # 3600
 
-    while game_time < 3600:
+    while True:
         game_record, eval, steps = tree.game()
 
         print(game_time)
@@ -29,10 +29,10 @@ def train():
 
         if len(game_record) % 2 == 1:
             print("game {} 完成, black win, "
-                  "花费时间 {}".format(game_time, len(game_record)))
+                  "总步数 {}".format(game_time, len(game_record)))
         else:
             print("game {} 完成, white win, "
-                  "花费时间 {}".format(game_time, len(game_record)))
+                  "总步数 {}".format(game_time, len(game_record)))
         # print("The average eval:{}, the average steps:{}".format(eval, steps))
         #
         # 生成训练数据

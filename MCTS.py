@@ -5,7 +5,7 @@ import time
 
 from five_stone_game import main_process as five_stone_game
 
-distrib_calculater = utils.distribution_calculater(size=8)
+distrib_calculater = utils.distribution_calculater(size=utils.board_size)
 
 
 class node:
